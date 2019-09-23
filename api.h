@@ -14,6 +14,7 @@ class MyAPI{
         MyAPI(utility::string_t uri);
         pplx::task<void> open() { return listener.open(); }
         pplx::task<void> close() { return listener.close(); }
+        ~MyAPI();
 
     private:
         web::http::experimental::listener::http_listener listener;

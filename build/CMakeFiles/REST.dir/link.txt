@@ -1,1 +1,0 @@
-/usr/bin/c++  -g  -rdynamic CMakeFiles/REST.dir/main.cpp.o CMakeFiles/REST.dir/api.cpp.o  -o REST /usr/lib/libdb.so /usr/lib/libcpprest.so.2.10 -lboost_system -ldb -ldb_cxx -ldb_stl -lpthread /usr/lib/libssl.so /usr/lib/libcrypto.so 

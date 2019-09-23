@@ -2,12 +2,18 @@
 
 MyAPI::MyAPI(utility::string_t uri):listener(uri){
     pdb = new Db(NULL,0);
-    pdb->open(NULL,"db.db",NULL,DB_BTREE,DB_CREATE|DB_TRUNCATE,0);
+    pdb->open(NULL,"db.db",NULL,DB_BTREE,DB_CREATE,0);
+    
     listener.support(web::http::methods::POST,std::bind(&MyAPI::handle_post, this, std::placeholders::_1));
     // listener.support(web::http::methods::GET,std::bind(&MyAPI::handle_get, this, std::placeholders::_1));
     // listener.support(web::http::methods::GET,std::bind(&MyAPI::handle_put, this, std::placeholders::_1));
     // listener.support(web::http::methods::GET,std::bind(&MyAPI::handle_delete, this, std::placeholders::_1));
 }
+
+MyAPI::~MyAPI(){
+    pdb->close(0);
+}
+
 void MyAPI::handle_post(web::http::http_request msg){
     
     msg.extract_string().then([=](const utility::string_t str){
