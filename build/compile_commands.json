@@ -1,0 +1,12 @@
+[
+{
+  "directory": "/home/redfox/cpprest/build",
+  "command": "/usr/bin/c++  -DCPPREST_FORCE_HTTP_CLIENT_ASIO -DCPPREST_FORCE_HTTP_LISTENER_ASIO -DCPPREST_NO_SSL_LEAK_SUPPRESS  -g   -o CMakeFiles/REST.dir/main.cpp.o -c /home/redfox/cpprest/main.cpp",
+  "file": "/home/redfox/cpprest/main.cpp"
+},
+{
+  "directory": "/home/redfox/cpprest/build",
+  "command": "/usr/bin/c++  -DCPPREST_FORCE_HTTP_CLIENT_ASIO -DCPPREST_FORCE_HTTP_LISTENER_ASIO -DCPPREST_NO_SSL_LEAK_SUPPRESS  -g   -o CMakeFiles/REST.dir/api.cpp.o -c /home/redfox/cpprest/api.cpp",
+  "file": "/home/redfox/cpprest/api.cpp"
+}
+]
