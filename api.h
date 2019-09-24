@@ -7,6 +7,7 @@
 #include <db_cxx.h>
 #include <dbstl_map.h>
 #include <boost/format.hpp>
+#include <limits>
 
 
 class MyAPI{

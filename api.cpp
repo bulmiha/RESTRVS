@@ -13,17 +13,16 @@ MyAPI::~MyAPI(){
 
 void MyAPI::handle_post(web::http::http_request msg){
     
-    msg.extract_string().then([=](const utility::string_t str){
-        int val,lastval=-1;
+    msg.extract_string().then([&](const utility::string_t str){
+        int val,lastval;
         std::string keys="value";
         Dbt key(const_cast<char*>(keys.data()),keys.size());
-        char buffer[sizeof(int)];
         Dbt data;
-        data.set_data(buffer);
-        data.set_ulen(sizeof(int));
+        data.set_data(&lastval);
+        data.set_ulen(sizeof(lastval));
         data.set_flags(DB_DBT_USERMEM);
-        if (pdb->get(NULL, &key, &data, 0) != DB_NOTFOUND) {
-                lastval=*reinterpret_cast<int*>(buffer);
+        if (pdb->get(NULL, &key, &data, 0) == DB_NOTFOUND) {
+               lastval=INT_MIN;
         }
         val=std::atoi(str.c_str());
         if(lastval>=val){
