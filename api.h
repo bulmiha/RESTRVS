@@ -6,11 +6,11 @@
 #include <cpprest/asyncrt_utils.h>
 #include <db_cxx.h>
 #include <dbstl_map.h>
+#include <boost/format.hpp>
 
 
 class MyAPI{
     public:
-        MyAPI();
         MyAPI(utility::string_t uri);
         pplx::task<void> open() { return listener.open(); }
         pplx::task<void> close() { return listener.close(); }

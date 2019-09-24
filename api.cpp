@@ -5,9 +5,6 @@ MyAPI::MyAPI(utility::string_t uri):listener(uri){
     pdb->open(NULL,"db.db",NULL,DB_BTREE,DB_CREATE,0);
     
     listener.support(web::http::methods::POST,std::bind(&MyAPI::handle_post, this, std::placeholders::_1));
-    // listener.support(web::http::methods::GET,std::bind(&MyAPI::handle_get, this, std::placeholders::_1));
-    // listener.support(web::http::methods::GET,std::bind(&MyAPI::handle_put, this, std::placeholders::_1));
-    // listener.support(web::http::methods::GET,std::bind(&MyAPI::handle_delete, this, std::placeholders::_1));
 }
 
 MyAPI::~MyAPI(){
@@ -31,25 +28,12 @@ void MyAPI::handle_post(web::http::http_request msg){
         val=std::atoi(str.c_str());
         if(lastval>=val){
             msg.reply(web::http::status_codes::BadRequest);
-            std::cout << "New value is equal or less" << std::endl;
+            printf("New value %d is equal or less than save one(%d)\n",val,lastval);
             return;
         }
         Dbt value(&val,sizeof(val));
         pdb->put(NULL,&key,&value,0);
+        printf("Received value of %d\n",val);
         msg.reply(web::http::status_codes::OK,std::to_string(val+1));
     });
 }
-
-// void MyAPI::handle_get(web::http::http_request msg){
-//     msg.reply(web::http::status_codes::BadRequest);
-// }
-
-// void MyAPI::handle_put(web::http::http_request msg){
-//     // std::cout<<"HIGET"<<std::endl;
-//     msg.reply(web::http::status_codes::BadRequest);
-// }
-
-// void MyAPI::handle_delete(web::http::http_request msg){
-//     // std::cout<<"HIGET"<<std::endl;
-//     msg.reply(web::http::status_codes::BadRequest);
-// }
