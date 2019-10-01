@@ -40,31 +40,69 @@ MyAPI::MyAPI(utility::string_t uri):listener(uri){
 MyAPI::~MyAPI(){
     redis->disconnect();
 }
+void MyAPI::badData(web::http::http_request &msg)
+{
+    printf("Bad data\n");
+    web::json::value err;
+    err["error"] = web::json::value::string(U("Wrong data"));
+    err["type"] = web::json::value::number(1);
+    msg.reply(web::http::status_codes::BadRequest,err);
+}
+
+uint MyAPI::checkVal(int v){
+    redisclient::RedisValue result;
+    result=redis->command("GET",{std::to_string(v)});
+    if(result.isError()){
+            return 1;
+    }
+    result=redis->command("GET",{std::to_string(v+1)});
+    if(result.isError()){
+            return 2;
+    }
+    redis->command("SET",{std::to_string(v),"True"});
+    return 0;
+}
 
 void MyAPI::handle_post(web::http::http_request msg){
-    
-    msg.extract_string().then([&](const utility::string_t str){
-        int val,lastval;
-        std::string keys="value";
-        val=std::atoi(str.c_str());
-        redisclient::RedisValue result;
-        result=redis->command("GET",{keys});
-        if(result.isError()){
-            lastval=INT_MIN;
+
+    msg.extract_json().then([&](web::json::value jsonMsg){
+        int val;
+        try{
+            val=jsonMsg["number"].as_integer();
         }
-        else {
-            lastval=std::atoi(result.toString().c_str());
-        }
-        if(lastval>=val){
-            msg.reply(web::http::status_codes::BadRequest);
-            printf("New value %d is equal or less than save one(%d)\n",val,lastval);
+        catch(web::json::json_exception e){
+            badData(msg);
             return;
         }
-        result=redis->command("SET",{keys,std::to_string(val)});
-        if(result.isError()){
-            printf("Can't save given value\n");
+        if(val<0){
+            badData(msg);
+            return;
         }
-        printf("Received value of %d\n",val);
-        msg.reply(web::http::status_codes::OK,std::to_string(val+1));
+        web::json::value result;
+        switch(checkVal(val)){
+            case 0:
+            {
+                result["result"] = web::json::value::number(val+1);
+                msg.reply(web::http::status_codes::OK,result);
+                return;
+                break;
+            }
+            case 1:
+            {
+                result["error"] = web::json::value::string(U("Value exists"));
+                result["type"] = web::json::value::number(1);
+                msg.reply(web::http::status_codes::BadRequest,result);
+                return;
+                break;
+            }
+            case 2:
+            {
+                result["error"] = web::json::value::string(U("Value is 1 less than existing"));
+                result["type"] = web::json::value::number(2);
+                msg.reply(web::http::status_codes::BadRequest,result);
+                return;
+                break;
+            }
+        }
     });
 }

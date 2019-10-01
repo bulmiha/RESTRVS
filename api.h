@@ -34,4 +34,6 @@ class MyAPI{
             int val;
         };
         redisclient::RedisSyncClient *redis;
+        void badData(web::http::http_request &msg);
+        uint checkVal(int v);
 };
