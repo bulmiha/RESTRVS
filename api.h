@@ -4,10 +4,9 @@
 #include <cpprest/http_listener.h>
 #include <cpprest/uri.h>
 #include <cpprest/asyncrt_utils.h>
-#include <db_cxx.h>
-#include <dbstl_map.h>
 #include <boost/format.hpp>
 #include <limits>
+#include "redisclient/redissyncclient.h"
 
 
 class MyAPI{
@@ -34,7 +33,5 @@ class MyAPI{
         {
             int val;
         };
-
-        Db * pdb;
-        
+        redisclient::RedisSyncClient *redis;
 };
